@@ -4,14 +4,14 @@ Generate initial point, assuming positive and non-vertical velocity.
 """
 function u_generator(v, r, d, ϕ)
     if norm(v) < 0.1
-        @log_trace "using direction instead of velocity"
+        @debug "using direction instead of velocity" _group=:guidance
         v = d/norm(d) # avoid zero velocity
     end
     if norm(v × r)/norm(v)/norm(r) < 0.1  # if we are facing up direction too much
-        @log_trace "using azimuth mode"
+        @debug "using azimuth mode" _group=:guidance
         return θ->[direction(v, θ, ϕ); r] # use azimuth during vertical ascent
     end
-    @log_trace "using up vector as base"
+    @debug "using up vector as base" _group=:guidance
     θ->[planar_rotate(v, r, θ); r]
 end
 
