@@ -1,6 +1,6 @@
 import Geophysics: pressure as earthpressure
 
-Earth = Body(
+Earth = CelestialBody.Body(
     6371km,
     140km,
     9.80665m/s^2,

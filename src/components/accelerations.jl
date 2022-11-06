@@ -3,10 +3,9 @@ gravity_acc(body, h)
 
 Gravity acceleration the model rocket is experiencing.
 """
-function gravity_acc(body::Body, altitude)
+function gravity_acc(body::CelestialBody.Body, altitude)
 body.grav*(body.bedrock)^2/(body.bedrock+altitude)^2 # m/s²
 end
-
 
 """
 gravity_acc(body)
@@ -14,6 +13,6 @@ gravity_acc(body)
 Gravity acceleration the model rocket is experiencing.
 Flat Earth approximation.
 """
-function gravity_acc(body::Body)
+function gravity_acc(body::CelestialBody.Body)
 body.grav # m/s²
 end
