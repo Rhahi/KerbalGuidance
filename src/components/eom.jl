@@ -2,10 +2,10 @@ function nonrotating_rhs!(du, u, p, t)
     # states and parameters
     v̄ = norm(view(u, 1:3))
     r̄ = norm(view(u, 4:6))
-    body = p[1]
-    rocket = p[2]
+    body, rocket, t₀ = p
+    time = t - t₀
     altitude = max(0, r̄ - body.radius)
-    stage, burn_time = current_stage(rocket, t)
+    stage, burn_time = current_stage(rocket, time)
     mass = stage_mass(stage, burn_time)
 
     # intermediates
