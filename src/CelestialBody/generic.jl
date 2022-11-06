@@ -1,5 +1,3 @@
-import Base: @kwdef
-
 @kwdef struct Body
     radius       ::Float64
     atmosphere   ::Float64

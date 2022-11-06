@@ -24,12 +24,10 @@ function NextStage(time=0; massflow, m₀, m₁, duration, vac, asl, area, Cd)
     max(0, time-duration), Stage(ṁ, m₀, m₁, duration, vac, asl, area, Cd)
 end
 
-
 """Collection of rocket stages without any coasting."""
 struct HotStageRocket <: Rocket
     stages::Array{Stage, 1}
 end
-
 
 function current_stage(rocket::HotStageRocket, time)
     burn_capability = 0
@@ -50,7 +48,6 @@ function current_stage(rocket::HotStageRocket, time)
     burn_time = time - previous_burn_time
     return stage, burn_time
 end
-
 
 function stage_mass(stage::Stage, time)
     stage.m₀ - min(stage.m₁, stage.ṁ * (time)) # kg

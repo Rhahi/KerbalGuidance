@@ -1,10 +1,11 @@
 module CelestialBody
 
-import Unitful: Length, Acceleration, Pressure
-import Unitful: uconvert, ustrip
 using Unitful.DefaultSymbols
+using Unitful: Length, Acceleration, Pressure
+using Unitful: uconvert, ustrip
+import Base: @kwdef
 
 include("generic.jl")
 include("planets.jl")
 
-end # module Body
+end
