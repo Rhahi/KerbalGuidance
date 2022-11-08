@@ -15,13 +15,13 @@ function NextStage(time=0; massflow, m₀, m₁, duration, vac, asl, area, Cd)
     m₀       = convert(Float64, uconvert(kg, m₀)         |> ustrip)
     m₁       = convert(Float64, uconvert(kg, m₁)         |> ustrip)
     duration = convert(Float64, uconvert(s, duration)    |> ustrip)
-    m₀ = m₀ - min(ṁ*time, m₁)
-    m₁ = m₁ - min(ṁ*time, 0)
+    m₀ = max(m₀-ṁ*time, m₁)
+    remaining_duration = max(0, duration - time)
     vac      = convert(Float64, uconvert(N, vac)         |> ustrip)
     asl      = convert(Float64, uconvert(N, asl)         |> ustrip)
     area     = convert(Float64, uconvert(m^2, area)      |> ustrip)
     Cd       = convert(Float64, Cd)
-    max(0, time-duration), Stage(ṁ, m₀, m₁, duration, vac, asl, area, Cd)
+    max(0, time-duration), Stage(ṁ, m₀, m₁, remaining_duration, vac, asl, area, Cd)
 end
 
 """Collection of rocket stages without any coasting."""
@@ -32,23 +32,32 @@ end
 function current_stage(rocket::HotStageRocket, time)
     burn_capability = 0
     previous_burn_time = 0
-    stage = rocket.stages[end]
-    burn_time = 0
+    stage = nothing
+    mass = 0
     for s in rocket.stages
         burn_capability += s.duration
-        if time > burn_capability
+        if time ≥ burn_capability
             # This stage has been dropped.
             previous_burn_time += s.duration
             continue
         end
-        # this stage is the current stage
-        stage = s
-        break
+        if isnothing(stage)
+            # this stage is the current stage
+            stage = s
+            mass += stage_mass(s, time - previous_burn_time)
+        else
+            # this stage hasn't been fired.
+            mass += s.m₀
+        end
     end
-    burn_time = time - previous_burn_time
-    return stage, burn_time
+    if isnothing(stage)
+        # all stages are burnt, use the last stage.
+        stage = rocket.stages[end]
+        mass = stage.m₁
+    end
+    return stage, time - previous_burn_time, mass
 end
 
 function stage_mass(stage::Stage, time)
-    stage.m₀ - min(stage.m₁, stage.ṁ * (time)) # kg
+    max(stage.m₀ - stage.ṁ*time, stage.m₁) # kg
 end

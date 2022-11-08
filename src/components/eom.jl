@@ -5,8 +5,7 @@ function nonrotating_rhs!(du, u, p, t)
     body, rocket, t₀ = p
     time = t - t₀
     altitude = max(0, r̄ - body.radius)
-    stage, burn_time = current_stage(rocket, time)
-    mass = stage_mass(stage, burn_time)
+    stage, burn_time, mass = current_stage(rocket, time)
 
     # intermediates
     grav = -gravity_acc(body)
