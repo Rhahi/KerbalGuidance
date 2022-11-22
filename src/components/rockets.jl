@@ -30,10 +30,9 @@ struct HotStageRocket <: Rocket
 end
 
 function current_stage(rocket::HotStageRocket, time)
-    burn_capability = 0
-    previous_burn_time = 0
+    burn_capability = 0.
+    previous_burn_time = 0.
     stage = nothing
-    mass = 0
     for s in rocket.stages
         burn_capability += s.duration
         if time ≥ burn_capability
@@ -44,18 +43,14 @@ function current_stage(rocket::HotStageRocket, time)
         if isnothing(stage)
             # this stage is the current stage
             stage = s
-            mass += stage_mass(s, time - previous_burn_time)
-        else
-            # this stage hasn't been fired.
-            mass += s.m₀
         end
     end
     if isnothing(stage)
         # all stages are burnt, use the last stage.
         stage = rocket.stages[end]
-        mass = stage.m₁
+        previous_burn_time -= stage.duration
     end
-    return stage, time - previous_burn_time, mass
+    return stage, time - previous_burn_time
 end
 
 function stage_mass(stage::Stage, time)

@@ -1,10 +1,10 @@
-function binary_search(solver::Function, u_generator::Function, evaluate::Function;
+function binary_search(solver::Function, ugen::Function, evaluate::Function;
     body, rocket, target, input_tolerance, output_tolerance, var_min, var_max, t₀, t₁
 )
     @debug "begin binary search" _group=:guidance
     var = (var_min+var_max)/2
     while true
-        u = Vector(u_generator(var))
+        u = Vector(ugen(var))
         error, sol = evaluate(solver(u, body, rocket, t₀, t₁), target)
         @debug "searching... error: $(round(error)), θ: $(round(var; digits=5))" _group=:guidance
         if abs(error) < output_tolerance
