@@ -49,32 +49,18 @@ end
     @test m4.stages[2] == current_stage(m4, 10000)[1]
 end
 
-@testset "stage mass test" begin
-    m1 = model(0)
+@testset "stage thrust test" begin
+    m1 = model(10)
     m1s1 = m1.stages[1]
     m1s2 = m1.stages[2]
-    @test current_stage(m1, 0)[3] == (m1s1.m₀ + m1s2.m₀)
-    @test current_stage(m1, 69.999)[3] ≉ m1s2.m₀
-    @test current_stage(m1, 70)[3] == m1s2.m₀
-    @test current_stage(m1, 10)[3] > current_stage(m1, 20)[3]
-
-    m2 = model(10)
-    m2s1 = m2.stages[1]
-    m2s2 = m2.stages[2]
-    @test m2s1.m₀ != m1s1.m₀
-    @test m2s1.m₁ == m1s1.m₁
-    @test m2s2.m₀ == m1s2.m₀
-    @test current_stage(m2, 0)[3] == (m2s1.m₀ + m2s2.m₀)
-    @test current_stage(m2, 20)[3] == current_stage(m1, 30)[3]
-    @test current_stage(m2, 59.999)[3] ≉ m2s2.m₀
-    @test current_stage(m2, 60)[3] == m2s2.m₀
-    @test current_stage(m2, 10)[3] > current_stage(m2, 20)[3]
-
-    m3 = model(80)
-    m3s1 = m3.stages[1]
-    m3s2 = m3.stages[2]
-    @test m3s1.m₀ == m3s1.m₁
-    @test current_stage(m3, 0)[3] == m3s2.m₀
-    @test current_stage(m3, 100)[3] == m3s2.m₁
-    @test current_stage(m3, 10)[3] ≈ current_stage(m2, 80)[3]
+    st, bt = current_stage(m1, 0)
+    @test thrust(st, bt) == m1s1.vac
+    st, bt = current_stage(m1, 50)
+    @test thrust(st, bt) == m1s1.vac
+    st, bt = current_stage(m1, 60)
+    @test thrust(st, bt) == m1s2.vac
+    st, bt = current_stage(m1, 70)
+    @test thrust(st, bt) == m1s2.vac
+    st, bt = current_stage(m1, 120)
+    @test thrust(st, bt) == 0
 end
