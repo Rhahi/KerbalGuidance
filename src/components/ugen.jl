@@ -2,12 +2,10 @@
 Generate initial point, assuming positive and non-vertical velocity.
 Angle unit in degrees.
 """
-function u_generatorₗ(v, r, d, ϕ; planar_threshold=10)
-    if norm(v) < 0.1
-        v = d/norm(d) # avoid zero velocity
+function u_generatorₗ(v, r, d, ϕ; planar_threshold=10, initial_velocity=20)
     end
     if (∠θ(v, r) |> rad2deg) < planar_threshold
-        return θ->[angle_directionₗ(v, 90-θ, ϕ); r]
+        return θ->[initial_velocity*angle_directionₗ(v, 90-θ, ϕ); r]
     end
     return θ->[planar_rotate(v, r, -θ); r]
 end
