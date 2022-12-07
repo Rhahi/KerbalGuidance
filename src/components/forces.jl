@@ -4,6 +4,7 @@ thrust(stage, t)
 Vaccum thrust of the model rocket.
 """
 function thrust(stage::Stage, burn_time)
+    burn_time ≤ 0 && return 0.
     burn_time > stage.duration && return 0.
     stage.vac
 end
@@ -15,6 +16,7 @@ Thrust of the model rocket, accounting for atmospheric affect.
 Assume continuous burn since ignition.
 """
 function thrust(stage::Stage, burn_time, body::CelestialBody.Body, altitude)
+    burn_time ≤ 0 && return 0.
     if altitude > body.atmosphere
         return thrust(stage, burn_time)
     end

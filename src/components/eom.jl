@@ -2,8 +2,11 @@ function nonrotating_rhs!(du, u, p, t)
     # states and parameters
     v̄ = norm(view(u, 1:3))
     r̄ = norm(view(u, 4:6))
-    body, rocket, t₀ = p
-    time = t - t₀
+    body, rocket, burn_start = p
+    # time offset, so that solution can be directly retreived using MET
+    # if burn_start is 0, assume that rocket was burning since time 0.
+    # if burn_start is 10, rocket ignites at time 10.
+    time = max(0, t - burn_start)
     altitude = max(0, r̄ - body.radius)
     stage, burn_time = current_stage(rocket, time)
     mass = stage_mass(stage, burn_time)
